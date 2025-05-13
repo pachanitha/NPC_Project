@@ -1,0 +1,328 @@
+/*homestyles.css */
+/* Reset basic styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Basic body styling */
+body {
+    font-family: 'Bai Jamjuree', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #131333;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    padding-top: 80px; /* Adjust for fixed header height */
+}
+
+/* Header styling */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1C1C1C;
+    padding: 20px;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #0E1968;
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+header .logo-img {
+    width: 200px;
+    height: auto;
+    margin-right: 10px;
+}
+
+header .logo h1 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* Navigation styling */
+nav {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+nav ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    gap: 20px;
+    white-space: nowrap;
+}
+
+nav ul li {
+    margin: 0;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: font-size 0.3s ease;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Main section styling */
+.main-section {
+    background-color: #FAF3EB;
+    padding: 30px 20px;
+    min-height: 60vh;
+    margin: 0;
+}
+
+/* Content wrapper */
+.content-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.image-wrapper {
+    flex: 1;
+    text-align: center;
+}
+
+.robot-img {
+    width: 100%;
+    max-width: 550px;
+    height: auto;
+}
+
+.text-wrapper {
+    flex: 1;
+    text-align: left;
+}
+
+.text-wrapper h2 {
+    font-size: 2.5rem;
+    color: #0E1968;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.text-wrapper p {
+    margin: 20px 0;
+    font-size: 1.2rem;
+    color: #0E1968;
+}
+
+.analyze-button {
+    display: inline-block;
+    background-color: #0E1968;
+    color: #fff;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.analyze-button:hover {
+    background-color: #001A80;
+}
+
+/* Services section */
+.services-wrapper {
+    background-color: #131333;
+    padding: 40px 20px;
+}
+
+.services-section {
+    color: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+
+.services-section h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 30px;
+}
+
+.services-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.services-section ul li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.check-icon {
+    width: 30px;
+    height: auto;
+    margin-top: 5px;
+}
+
+/* Features section */
+.features-section {
+    padding: 50px 20px;
+    background-color: #F9F6F1;
+    text-align: center;
+}
+
+.features-heading {
+    font-size: 2.5rem;
+    color: #0E1968;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.features-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    text-align: left;
+}
+
+.feature-card h3 {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.feature-card p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Footer section */
+footer {
+    background-color: #1C1C1C;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* Fade-in animation for sections */
+.fade-in {
+    animation: fadeInAnimation 0.5s ease-in;
+}
+
+/* Update navigation link styling to handle username display */
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: font-size 0.3s ease;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Optional: Style for the username display */
+nav ul li a#logout-link {
+    display: flex;
+    align-items: center;
+}
+
+/* Adjust spacing if necessary */
+nav ul li a#logout-link::before {
+    content: '🔒'; /* Add a lock icon before Logout */
+    margin-right: 5px;
+}
+
+@keyframes fadeInAnimation {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade-out animation */
+.fade-out {
+    animation: fadeOutAnimation 0.5s forwards;
+}
+
+@keyframes fadeOutAnimation {
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+/* Media queries */
+@media screen and (max-width: 600px) {
+    header {
+        padding: 10px;
+    }
+
+    nav {
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+
+    nav ul {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    nav ul li:first-child {
+        margin-left: 0;
+    }
+
+    header .logo h1 {
+        font-size: 1rem;
+    }
+
+    nav ul li a {
+        font-size: 1rem;
+    }
+
+    .content-wrapper {
+        flex-direction: column;
+    }
+
+    .text-wrapper h2 {
+        font-size: 2rem;
+    }
+}

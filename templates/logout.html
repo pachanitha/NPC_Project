@@ -1,0 +1,39 @@
+<!-- logout.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logged Out</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='homestyles.css') }}">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">
+            <a href="/">
+                <img src="{{ url_for('static', filename='image/logo.png') }}" alt="Logo" class="logo-img">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li> 
+                <li><a href="{{ url_for('analyze') }}">Analyze</a></li> 
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <h1>You have been logged out.</h1>
+        <a href="{{ url_for('login') }}">Login Again</a>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>NPC Detection & Explanation</p>
+    </footer>
+</body>
+</html>

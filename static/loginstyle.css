@@ -1,0 +1,177 @@
+/* Reset basic styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Basic body styling */
+body {
+    font-family: 'Bai Jamjuree', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #131333;
+    overflow-x: hidden;
+    padding-top: 80px; /* Adjust for fixed header height */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header styling */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1C1C1C;
+    padding: 20px 40px;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    border-bottom: 2px solid #0E1968;
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+}
+
+header .logo-img {
+    width: 150px;
+    height: auto;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: color 0.3s, border-bottom 0.3s;
+    border-bottom: 2px solid transparent;
+}
+
+nav ul li a:hover {
+    color: #FAF3EB;
+    border-bottom: 2px solid #FAF3EB;
+}
+
+/* Centered Title */
+.centered-title {
+    text-align: center;
+    margin-top: 120px; /* Ensure it's below the header */
+}
+
+.centered-title h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    font-style: italic;
+    color: #FAF3EB;
+}
+
+/* Main content layout */
+.main-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 50px auto;
+    max-width: 1600px; /* Adjust max-width for extra space */
+    padding: 20px;
+    gap: 100px; /* Adjust gap between image and form */
+}
+
+/* Left Image Section */
+.image-container {
+    flex: 1;
+    text-align: left; /* Align image to the left */
+    margin-left: -200px; /* Move the image further to the left */
+}
+
+.left-image {
+    max-width: 120%; /* Make the image larger */
+    height: auto;
+    border-radius: 15px;
+}
+
+/* Login Form Section */
+.login-container {
+    flex: 1;
+    background-color: #FAF3EB;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 1000px; /* Increased the width of the form container */
+    margin-right: -50px; /* Adjust form alignment */
+}
+
+form label {
+    display: block;
+    font-size: 1.5rem;
+    color: #0E1968;
+    margin-bottom: 10px;
+}
+
+form input {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+form button {
+    background-color: #0E1968;
+    color: #fff;
+    padding: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+}
+
+form button:hover {
+    background-color: #001A80;
+}
+
+/* Footer Section */
+footer {
+    background-color: #1C1C1C;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: auto;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .image-container {
+        margin-left: 0; /* Reset margin for small screens */
+        text-align: center; /* Center the image on small screens */
+    }
+
+    .left-image {
+        max-width: 90%; /* Adjust image size for small screens */
+    }
+
+    .login-container {
+        max-width: 100%; /* Allow the form to adjust width for small screens */
+        margin-right: 0; /* Reset margin for small screens */
+    }
+}

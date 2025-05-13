@@ -1,0 +1,353 @@
+<!-- result.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NPC Result</title>
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='resultstyle.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;700&family=Rubik:wght@400;700&family=Saira+SemiCondensed:wght@700&family=Fira+Code&display=swap" rel="stylesheet">
+
+  <!-- Prism.js CSS for Syntax Highlighting -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
+
+  <!-- Import marked and DOMPurify for explanation rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
+</head>
+<body>
+  <div class="container result-page">
+    <header>
+      <div class="logo">
+        <a href="{{ url_for('home') }}">
+          <img src="{{ url_for('static', filename='image/logo.png') }}" alt="Logo" class="logo-img">
+        </a>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="{{ url_for('analyze') }}">Analyze</a></li>
+          {% if 'user' in session %}
+            <li><a href="#" id="logout-link">Logout ({{ session['user'] }})</a></li>
+          {% else %}
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('register') }}">Register</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </header>
+
+    <div class="title-section">
+      <h1>Result of Your Code Analysis</h1>
+    </div>
+
+    <section class="result-content">
+      <!-- Code Analysis Result -->
+      <div class="code-container">
+        <div class="code-overlay">
+          <h2 id="prob-value">
+            {{ probability_chatgpt | round(2) if probability_chatgpt is not none else "N/A" }}%
+          </h2>
+          <p class="description-text">Probability of ChatGPT-generated Code</p>
+        </div>
+        <div class="code-box">
+          <div class="code-box-header">
+            <h3>Code:</h3>
+            <button id="copy-user-code" class="copy-button">Copy</button>
+          </div>
+          <pre class="line-numbers">
+            <code id="user-code" class="language-java">{{ code | safe }}</code>
+          </pre>
+        </div>
+      </div>
+
+      <!-- Explanation Section -->
+      <div class="explanation">
+        <div class="explanation-header">
+          <h3>Explanation:</h3>
+          <button id="copy-explanation" class="copy-button">Copy</button>
+        </div>
+        <div id="explanation-result">Loading explanation...</div>
+        <button id="readMoreBtn" class="read-more-btn" style="display: none;">Read more</button>
+      </div>
+    </section>
+
+    <!-- Feedback Section -->
+    <section class="feedback-section">
+      <h1>FEEDBACK</h1>
+      <h4>Please rate this explanation (5 stars = very good explanation, 1 star = very bad explanation).</h4><br>
+      <div class="feedback-content">
+        <div class="feedback-form">
+          <!-- Hidden inputs for request_id and upload_id -->
+          <input type="hidden" id="feedback-request-id" value="{{ request_id }}">
+          <input type="hidden" id="feedback-upload-id" value="{{ upload_id }}">
+
+          <!-- Overall Rating -->
+          <h4>1. Please rate this explanation overall</h4>
+          <div class="rating" data-category="overall">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </div>
+
+          <!-- How concise is the explanation? -->
+          <h4>2. Is  the explantion efficient and avoids unnessessary information, presenting only essential details to understand whether the code is written by human or LLMs effectively?</h4>
+          <div class="rating" data-category="conciseness">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </div>
+
+          <!-- How clear is the explanation? -->
+          <h4>3. Is the explanation presented in a clear and understandable manner, enabling you to understand the origin of this codes  better?</h4>
+          <div class="rating" data-category="clarity">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </div>
+
+          <!-- Does the explanation help you judge the code better? -->
+          <h4>4. Does the explanation help you to make judgement about this student's coding submission better?</h4>
+          <div class="rating" data-category="actionability">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </div>
+
+          <!-- Are the selected code lines useful? -->
+          <h4>5. Are the selected lines from the target source code useful?</h4>
+          <div class="rating" data-category="selected_line_useful">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </div>
+
+          <!-- Is the additional code example useful? -->
+          <h4>6. Is the additional provided code example useful?</h4>
+          <div class="rating" data-category="additional_code_useful">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </div>
+
+          <!-- Additional Feedback -->
+          <h4>7. If you have any additional feedback, please type it in here:</h4>
+          <textarea id="feedback-additional" placeholder="Your answer..."></textarea>
+          <button id="submit-feedback" class="feedback-button">Submit Feedback</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>NPC Detection & Explanation</p>
+  </footer>
+
+  <!-- Prism.js Scripts for Syntax Highlighting -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+  <!-- Custom JavaScript for rendering explanation & handling feedback -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Logout handler
+      const logoutLink = document.getElementById('logout-link');
+      if (logoutLink) {
+        logoutLink.addEventListener('click', function (event) {
+          event.preventDefault();
+          if (confirm('Are you sure you want to logout?')) {
+            fetch('/logout')
+              .then(response => response.json())
+              .then(data => {
+                alert(data.message);
+                if (data.success) {
+                  window.location.href = '/';
+                }
+              })
+              .catch(error => alert('Error logging out.'));
+          }
+        });
+      }
+
+      // Code highlighting for user code
+      const codeElement = document.getElementById('user-code');
+      if (codeElement && codeElement.textContent.trim() !== "") {
+        Prism.highlightElement(codeElement);
+      }
+      document.getElementById('copy-user-code').addEventListener('click', function () {
+        navigator.clipboard.writeText(codeElement.textContent)
+          .then(() => alert('Code copied to clipboard!'))
+          .catch(err => console.error('Error copying code:', err));
+      });
+
+      // Set color of probability based on its value
+      const probElement = document.getElementById('prob-value');
+      if (probElement) {
+        const probText = probElement.innerText;
+        const probNumber = parseFloat(probText);
+        if (!isNaN(probNumber)) {
+          probElement.style.color = (probNumber > 50) ? 'red' : 'green';
+        }
+      }
+
+      // Render explanation content
+      const explanationDiv = document.getElementById('explanation-result');
+      const readMoreBtn = document.getElementById('readMoreBtn');
+      const explanationRaw = {{ explanation | tojson | safe }};
+      if (!explanationRaw || explanationRaw === 'null') {
+        explanationDiv.innerHTML = '<p>No explanation available.</p>';
+      } else {
+        let explanationHTML = marked.parse(explanationRaw);
+        explanationHTML = DOMPurify.sanitize(explanationHTML);
+        const processedHTML = setupReadMoreByHr(explanationHTML);
+        explanationDiv.innerHTML = processedHTML.shortText;
+        if (processedHTML.hiddenText) {
+          readMoreBtn.style.display = "inline-block";
+        }
+        Prism.highlightAllUnder(explanationDiv);
+        let isExpanded = false;
+        readMoreBtn.addEventListener('click', function () {
+          if (!isExpanded) {
+            explanationDiv.innerHTML = processedHTML.fullText;
+            readMoreBtn.textContent = "Read less";
+            isExpanded = true;
+            Prism.highlightAllUnder(explanationDiv);
+          } else {
+            explanationDiv.innerHTML = processedHTML.shortText;
+            readMoreBtn.textContent = "Read more";
+            isExpanded = false;
+            Prism.highlightAllUnder(explanationDiv);
+            document.querySelector(".explanation").scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      }
+
+      function setupReadMoreByHr(htmlString) {
+        const parts = htmlString.split(/<hr\s*\/?>/i);
+        if (parts.length > 1) {
+          const shortText = parts[0];
+          const remainingParts = parts.slice(1).join('<hr />');
+          const fullText = shortText + '<hr />' + remainingParts;
+          return {
+            shortText: shortText,
+            fullText: fullText,
+            hiddenText: true
+          };
+        } else {
+          return {
+            shortText: htmlString,
+            fullText: null,
+            hiddenText: false
+          };
+        }
+      }
+
+      // Copy explanation to clipboard
+      const copyExplanationBtn = document.getElementById('copy-explanation');
+      copyExplanationBtn.addEventListener('click', function () {
+        const explanationText = explanationDiv.innerText;
+        navigator.clipboard.writeText(explanationText)
+          .then(() => alert('Explanation copied to clipboard!'))
+          .catch(err => console.error('Error copying explanation:', err));
+      });
+
+      // Setup star ratings for feedback
+      document.querySelectorAll('.rating').forEach(container => {
+        const stars = container.querySelectorAll('.star');
+        stars.forEach(star => {
+          star.addEventListener('click', function () {
+            const ratingValue = parseInt(this.getAttribute('data-value'));
+            stars.forEach(s => {
+              if (parseInt(s.getAttribute('data-value')) <= ratingValue) {
+                s.textContent = '⭐️';
+                s.classList.add('selected');
+              } else {
+                s.textContent = '☆';
+                s.classList.remove('selected');
+              }
+            });
+            container.setAttribute('data-selected', ratingValue);
+          });
+        });
+      });
+
+      // Feedback submission logic
+      document.getElementById('submit-feedback').addEventListener('click', function () {
+        const ratings = {};
+        let allRated = true;
+        document.querySelectorAll('.rating').forEach(container => {
+          const category = container.getAttribute('data-category');
+          const selectedRating = container.getAttribute('data-selected');
+          if (selectedRating) {
+            ratings[category] = parseInt(selectedRating);
+          } else {
+            allRated = false;
+          }
+        });
+        if (!allRated) {
+          alert('Please provide ratings for all categories.');
+          return;
+        }
+        const feedbackAdditional = document.getElementById('feedback-additional').value.trim();
+        const requestId = document.getElementById('feedback-request-id')?.value || null;
+        const uploadId = document.getElementById('feedback-upload-id')?.value || null;
+        if (!requestId && !uploadId) {
+          alert('No valid request or upload session found.');
+          return;
+        }
+        const payload = {
+          request_id: requestId,
+          upload_id: uploadId,
+          ratings: ratings,
+          feedback_additional: feedbackAdditional,
+        };
+        fetch("{{ url_for('submit_feedback') }}", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert(data.message || 'Feedback submitted successfully!');
+            disableFeedbackForm();
+          } else {
+            alert(`Error: ${data.error || 'An error occurred while submitting feedback.'}`);
+          }
+        })
+        .catch(error => {
+          console.error('Error submitting feedback:', error);
+          alert('An unexpected error occurred. Please try again.');
+        });
+      });
+
+      function disableFeedbackForm() {
+        document.querySelectorAll('.rating .star').forEach(star => {
+          star.style.pointerEvents = 'none';
+          star.style.cursor = 'default';
+        });
+        document.getElementById('feedback-additional').disabled = true;
+        const submitButton = document.getElementById('submit-feedback');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Feedback Submitted';
+      }
+    });
+  </script>
+</body>
+</html>

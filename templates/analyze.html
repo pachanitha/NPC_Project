@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Analyze Code - NPC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;700&family=Rubik:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='analyzestyle.css') }}">
+  <style>
+    /* Loading overlay styles */
+    .loading-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5); display: flex; align-items: center;
+      justify-content: center; z-index: 1000;
+    }
+    .loading-message {
+      color: white; font-size: 1.5em; text-align: center;
+    }
+  </style>
+</head>
+<body class="fade-in">
+  <div id="loading-overlay" class="loading-overlay" style="display: none;">
+    <div class="loading-message"><p>Processing... Please wait.</p></div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <a href="/">
+        <img src="{{ url_for('static', filename='image/logo.png') }}" alt="Logo" class="logo-img">
+      </a>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('analyze') }}">Analyze</a></li>
+        {% if 'user' in session %}
+          <li><a href="#" id="logout-link">Logout ({{ session['user'] }})</a></li>
+        {% else %}
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <section class="main-content">
+    <div class="content-wrapper">
+      <h2 class="centered-heading">Analyze Your Code</h2>
+
+      <div class="text-content">
+        <h3>Classification & Explanation<br>of ChatGPT-Generated Code</h3>
+        <p>
+          NPC analyzes code using insights from AI-generated tools like ChatGPT-4o and Gemini 1.5 Pro.
+          It helps users distinguish between human-written and ChatGPT-generated code by examining unique patterns and styles, providing clear explanations for each result.
+        </p>
+        <img src="{{ url_for('static', filename='image/robotanalyze.gif') }}" alt="Robot analyzing code" class="robot-img">
+      </div>
+
+      <div class="input-box-wrapper">
+        <div class="input-container">
+          <textarea id="code-input" placeholder="Paste your code..." aria-label="Code input area"></textarea>
+        </div>
+        
+        <!-- ลบส่วน Addition Check ออกแล้ว -->
+
+        <div class="model-selection">
+          <h4>Choose an Explanation Model:</h4>
+          <div class="radio-group">
+            <label><input type="radio" name="model" value="ChatGPT"> ChatGPT-4o</label>
+            <label><input type="radio" name="model" value="Gemini"> Gemini 1.5 Pro</label>
+          </div>
+        </div>
+
+        <div class="buttons-outside">
+          <button id="check-code" onclick="handleTextUpload()">Check Code</button>
+          <button id="upload-file" onclick="document.getElementById('file-input').click()">Upload File</button>
+          <input type="file" id="file-input" style="display: none;" accept=".txt, .js, .py, .java, .cpp">
+          <button id="upload-folder" onclick="document.getElementById('folder-input').click()">Upload Folder</button>
+          <input type="file" id="folder-input" style="display: none;" webkitdirectory directory multiple>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>NPC Detection & Explanation</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const logoutLink = document.getElementById('logout-link');
+      if (logoutLink) {
+        logoutLink.addEventListener('click', function(event) {
+          event.preventDefault();
+          if (confirm('Are you sure you want to logout?')) {
+            fetch('/logout', { method: 'GET', headers: { 'Content-Type': 'application/json' } })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  alert(data.message);
+                  window.location.href = '/';
+                } else {
+                  alert(data.message);
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while logging out.');
+              });
+          }
+        });
+      }
+    });
+
+    function showLoading(message = "Processing... Please wait.") {
+      const overlay = document.getElementById('loading-overlay');
+      overlay.style.display = 'flex';
+      overlay.querySelector('p').textContent = message;
+    }
+    function hideLoading() {
+      document.getElementById('loading-overlay').style.display = 'none';
+    }
+
+    function handleTextUpload() {
+      const code = document.getElementById('code-input').value.trim();
+      const selectedModelElement = document.querySelector('input[name="model"]:checked');
+      if (!selectedModelElement) {
+        alert("Please select an explanation model.");
+        return;
+      }
+      if (code === "") {
+        alert("Please enter some code to analyze.");
+        return;
+      }
+      const selectedModel = selectedModelElement.value;
+      showLoading("Analyzing your code...");
+
+      fetch("{{ url_for('result') }}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: code, model: selectedModel })
+      })
+      .then(response => response.json())
+      .then(data => {
+        hideLoading();
+        if (data.error) {
+          alert(data.error);
+        } else {
+          const { classification_task_id, explanation_task_id } = data;
+          window.location.href = `/result/${classification_task_id}/${explanation_task_id}`;
+        }
+      })
+      .catch(error => {
+        hideLoading();
+        console.error('Error:', error);
+        alert('An error occurred while processing the code. Please try again.');
+      });
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) {
+        alert("Please select a file.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const fileContent = e.target.result.trim();
+        const selectedModelElement = document.querySelector('input[name="model"]:checked');
+        if (!selectedModelElement) {
+          alert("Please select an explanation model.");
+          return;
+        }
+        const selectedModel = selectedModelElement.value;
+        showLoading("Uploading and analyzing your file...");
+
+        fetch("{{ url_for('result') }}", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: fileContent, model: selectedModel })
+        })
+        .then(response => response.json())
+        .then(data => {
+          hideLoading();
+          if (data.error) {
+            alert(data.error);
+          } else {
+            const { classification_task_id, explanation_task_id } = data;
+            window.location.href = `/result/${classification_task_id}/${explanation_task_id}`;
+          }
+        })
+        .catch(error => {
+          hideLoading();
+          console.error('Error:', error);
+          alert("An error occurred while processing the file. Please try again.");
+        });
+      };
+      reader.readAsText(file);
+    }
+
+    function handleFolderUpload(event) {
+      const files = event.target.files;
+      if (!files.length) {
+        alert("Please select a folder.");
+        return;
+      }
+      const selectedModelElement = document.querySelector('input[name="model"]:checked');
+      if (!selectedModelElement) {
+        alert("Please select an explanation model.");
+        return;
+      }
+      const selectedModel = selectedModelElement.value;
+      const formData = new FormData();
+      formData.append('model', selectedModel);
+      Array.from(files).forEach(file => formData.append('files[]', file));
+
+      showLoading("Uploading and analyzing your folder...");
+
+      fetch("{{ url_for('upload_folder') }}", {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        hideLoading();
+        if (data.error) {
+          alert(data.error);
+        } else {
+          const { upload_id } = data;
+          window.location.href = `/resultUploadFolder/${upload_id}`;
+        }
+      })
+      .catch(error => {
+        hideLoading();
+        console.error('Error:', error);
+        alert("An error occurred while processing the folder. Please try again.");
+      });
+    }
+    document.getElementById('file-input').addEventListener('change', handleFileUpload);
+    document.getElementById('folder-input').addEventListener('change', handleFolderUpload);
+  </script>
+</body>
+</html>

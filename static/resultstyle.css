@@ -1,0 +1,594 @@
+/* ================================
+   Reset Some Basic Styling
+   ================================ */
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================================
+   Basic Body Styling
+   ================================ */
+body {
+    font-family: 'Rubik', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #131333;
+    overflow-x: hidden;
+    padding-top: 100px; /* Space for fixed header */
+}
+
+/* ================================
+   Container Styles
+   ================================ */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* ================================
+   Header Styling
+   ================================ */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1C1C1C;
+    padding: 20px;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #0E1968;
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+header .logo-img {
+    width: 200px;
+    height: auto;
+    margin-right: 10px;
+}
+
+/* Navigation Styling */
+nav {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+nav ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    gap: 20px;
+    white-space: nowrap;
+}
+
+nav ul li {
+    margin: 0;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 700;
+    transition: font-size 0.3s ease;
+    font-family: 'Bai Jamjuree', sans-serif;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* ================================
+   Responsive Design for Header
+   ================================ */
+@media screen and (max-width: 600px) {
+    header {
+        padding: 10px;
+    }
+
+    nav {
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+
+    nav ul {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    header .logo h1 {
+        font-size: 1rem;
+    }
+
+    nav ul li a {
+        font-size: 1rem;
+    }
+}
+
+/* ================================
+   Title Section
+   ================================ */
+.title-section {
+    margin-top: 10px;
+    margin-bottom: -10px;
+    text-align: center;
+}
+
+.title-section h1 {
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    font-style: italic;
+    color: #FFF;
+    margin-bottom: 10px;
+}
+
+.title-text {
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    font-style: italic;
+    color: #FFF;
+    margin-bottom: 10px;
+}
+
+/* ================================
+   Code Overlay Styling (Percent Text)
+   ================================ */
+.code-overlay {
+    margin-top: 0;      /* ปรับได้ตามต้องการ */
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* เลื่อนเปอร์เซ็นต์ขึ้น */
+.code-overlay h2 {
+    font-family: 'Saira SemiCondensed', sans-serif;
+    font-weight: 700;
+    font-size: 96px; /* ปรับตามชอบ */
+    margin: -20px 0 0 0; /* เลื่อนขึ้น 20px (เพิ่มเป็นลบ) */
+    /* color คุมผ่าน JS หรือ Jinja2 */
+}
+
+/* ถ้าต้องการเพิ่มเลื่อนขึ้นอีก ก็ปรับเป็น -30px, -40px ได้ */
+
+/* percent-text class (หากยังใช้) */
+.percent-text {
+    font-family: 'Saira SemiCondensed', sans-serif;
+    font-weight: 700;
+    font-size: 96px;
+    color: #FF5C5C;
+    position: relative;
+}
+
+.percent.loading {
+    font-size: 48px;
+    position: relative;
+    top: 20px;
+    color: #FFFFFF;
+}
+
+#percent-sign {
+    font-size: 96px;
+    color: inherit;
+}
+
+/* ================================
+   Description Text
+   ================================ */
+.description-text {
+    font-family: 'Rubik', sans-serif;
+    font-size: 24px;
+    color: #FFFFFF;
+    margin-top: -10px;
+}
+
+/* ================================
+   Result Content (Main Layout)
+   ================================ */
+.result-content {
+    text-align: center;
+    padding: 30px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+/* ================================
+   Code Container
+   ================================ */
+.code-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* ================================
+   Code Box Styling
+   ================================ */
+.code-box {
+    background-color: #1E1E1E;
+    color: #FFF;
+    border-radius: 5px;
+    padding: 15px;
+    min-height: 150px;
+    overflow-x: auto;
+    text-align: left;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.code-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.copy-button {
+    background-color: #1830B4;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.copy-button:hover {
+    background-color: #3056f1;
+}
+
+.code-box pre {
+    background-color: #1E1E1E;
+    color: #D4D4D4;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 10px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.code-box pre code {
+    display: block;
+    white-space: pre-wrap;
+}
+
+.code-box h3 {
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #FFF;
+}
+
+.code-box p {
+    font-size: 1.2rem;
+    color: #FFF;
+}
+
+/* ================================
+   Explanation Section
+   ================================ */
+.explanation {
+    background-color: #FFFFFF;
+    color: #000000;
+    padding: 30px 20px;
+    border-radius: 5px;
+    width: 80%;
+    margin: 0 auto;
+    text-align: left;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.explanation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.explanation h3 { 
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #000;
+}
+
+.explanation pre {
+    background-color: #1E1E1E;
+    color: #D4D4D4;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 15px 0;
+}
+
+.explanation code {
+    background-color: #F5F5F5;
+    color: #D6336C;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.95rem;
+}
+
+.explanation ul, .explanation ol {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.code-block-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.copy-button-inline {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0.8;
+}
+
+.copy-button-inline:hover {
+    opacity: 1;
+}
+
+.code-block-wrapper pre {
+    padding-top: 40px;
+}
+
+/* ================================
+   Feedback Section Styling
+   ================================ */
+.feedback-section {
+  /* พื้นหลัง + จัดกึ่งกลาง */
+  background-color: #FAF3E6;
+  padding: 30px 20px;
+  border-radius: 5px;
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;  /* ให้ title FEEDBACK อยู่กึ่งกลาง */
+}
+
+.feedback-section h1 {
+  color: #1830B4;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  font-family: 'Bai Jamjuree', sans-serif;
+}
+
+.feedback-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.feedback-image {
+    flex: 1;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.feedback-image img {
+    width: 250px;
+    height: auto;
+}
+
+.feedback-form {
+    /* คงค่าเดิมเท่าที่จำเป็น */
+    max-width: 500px;
+    text-align: left;
+    margin: 0 20px;
+
+    /* เพิ่มส่วนนี้เพื่อขยับเนื้อหาไปทางซ้าย 10cm */
+    margin-left: 0px;
+    margin-right: 0px;
+    margin: center;
+}
+
+.feedback-form h3 {
+    font-size: 1.5rem;
+    text-align: center;
+    color: #313131;
+    margin-bottom: 10px;
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-weight: 700;
+}
+
+.feedback-form h4 {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin: center;
+    text-align: left; /* ถ้าอยากให้ข้อความชิดซ้าย */
+}
+
+
+.rating {
+    font-size: 2rem;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.rating .star {
+    display: inline-block;
+    margin-right: 5px;
+    transition: transform 0.2s;
+}
+
+.rating .star:hover {
+    transform: scale(1.2);
+}
+
+/* สไตล์สำหรับ textarea ให้สั้นลงเล็กน้อย */
+.feedback-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    min-height: 60px; /* ลดความสูงขั้นต่ำ */
+    resize: vertical;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.feedback-form textarea:focus {
+    border-color: #1830B4;
+    box-shadow: 0 0 5px rgba(24, 48, 180, 0.5);
+    outline: none;
+}
+
+#submit-feedback {
+    background-color: #1830B4;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease-in-out;
+}
+
+#submit-feedback:hover {
+    background-color: #3056f1;
+}
+
+.feedback-button {
+    background-color: #1830B4;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    text-align: center;
+}
+
+.feedback-button:hover {
+    background-color: #3056f1;
+}
+
+.feedback-form h4 {
+    font-size: 1.2rem;
+    color: #313131;
+    margin-bottom: 10px;
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-weight: 500;
+}
+
+/* ================================
+   Responsive Design for Feedback Section
+   ================================ */
+@media (max-width: 768px) {
+    .feedback-content {
+        flex-direction: column;
+    }
+    .feedback-image,
+    .feedback-form {
+        max-width: 90%;
+    }
+    .feedback-image img {
+        width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .feedback-image img {
+        width: 60px;
+    }
+    .feedback-form {
+        max-width: 100%;
+    }
+}
+
+/* ================================
+   Footer Styling
+   ================================ */
+footer {
+    background-color: #1C1C1C;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* ================================
+   ปุ่ม Read more/Read less
+   ================================ */
+.read-more-btn {
+    background-color: #F0F0F0;
+    color: #1830B4;
+    border: 2px solid #1830B4;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s;
+    margin-top: 10px;
+}
+
+.read-more-btn:hover {
+    background-color: #1830B4;
+    color: #ffffff;
+}
+
+/* Update navigation link styling to handle username display */
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: font-size 0.3s ease;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Optional: Style for the username display */
+nav ul li a#logout-link {
+    display: flex;
+    align-items: center;
+}
+
+/* Adjust spacing if necessary */
+nav ul li a#logout-link::before {
+    content: '🔒'; /* Add a lock icon before Logout */
+    margin-right: 5px;
+}
+
+.star.selected {
+    color: gold;
+    font-weight: bold;
+}

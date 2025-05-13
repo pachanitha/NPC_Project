@@ -1,0 +1,209 @@
+<!-- resultUploadFolder.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result of Code Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='result_uploadFolder.css') }}">
+    <!-- ลบการนำเข้า jQuery ถ้าไม่ใช้งาน -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='image/logo.png') }}" alt="Logo" class="logo-img">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('analyze') }}">Analyze</a></li>
+                    {% if 'user' in session %}
+                        <li><a href="#" id="logout-link">Logout ({{ session['user'] }})</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Login</a></li>
+                        <li><a href="{{ url_for('register') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Table Section -->
+        <section class="result-content table-section">
+            <h1>Result of Code Analysis</h1>
+
+            <div class="sort-buttons">
+                <button onclick="sortTable('name', this)" data-sort-order="asc">Sort by File Name</button>
+                <button onclick="sortTable('probability', this)" data-sort-order="asc">Sort by Percentage</button>
+            </div>
+
+            <table id="result-table">
+                <thead>
+                    <tr>
+                        <th>File Name</th>
+                        <th>% of ChatGPT-Generated</th>
+                        <th>Classification</th>
+                        <th>Explanation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ result.file_name }}</td>
+                        
+                        <!-- Probability Column -->
+                        <td class="probability">
+                            {% if result.status == "Complete" %}
+                                <span>{{ result.probability_chatgpt|default("N/A") }}%</span>
+                            {% elif result.status == "Error" %}
+                                <em>Error</em>
+                            {% else %}
+                                <em>Loading...</em>
+                            {% endif %}
+                        </td>
+                
+                        <!-- Classification Column -->
+                        <td>
+                            {% if result.status == "Complete" %}
+                                {{ result.classification|default("N/A") }}
+                            {% elif result.status == "Error" %}
+                                <em>Error</em>
+                            {% else %}
+                                <em>Loading...</em>
+                            {% endif %}
+                        </td>
+                
+                        <!-- Explanation Column -->
+                        <td>
+                            {% if result.status == "Complete" %}
+                                <a href="{{ url_for('explanation', request_id=result.request_id) }}">
+                                    <button>View Explanation</button>
+                                </a>
+                            {% elif result.status == "Error" %}
+                                <em>Error</em>
+                            {% else %}
+                                <em>Loading...</em>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>                
+            </table>
+        </section>
+    </div>
+
+    <!-- Footer Section อยู่ภายใน <body> -->
+    <footer>
+        <p>NPC Detection & Explanation</p>
+    </footer>
+
+    <!-- JavaScript Section -->
+    <script>
+        // Update text color in probability column
+        document.addEventListener('DOMContentLoaded', function() {
+                const logoutLink = document.getElementById('logout-link');
+                if (logoutLink) {
+                    logoutLink.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        if (confirm('Are you sure you want to logout?')) {
+                            fetch('/logout', {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert(data.message);
+                                    window.location.href = '/';
+                                } else {
+                                    alert(data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while logging out.');
+                            });
+                        }
+                    });
+                }
+            });
+        document.addEventListener('DOMContentLoaded', function () {
+            const updateTextColors = () => {
+                document.querySelectorAll('.probability span').forEach(span => {
+                    const percentageText = span.textContent.replace('%', '').trim();
+                    const percentage = parseFloat(percentageText);
+                    if (!isNaN(percentage)) {
+                        span.style.color = percentage >= 50 ? 'red' : 'green';
+                    } else {
+                        span.style.color = 'black'; // กำหนดสีเริ่มต้นถ้าไม่ใช่ตัวเลข
+                    }
+                });
+            };
+
+            // Initial update
+            updateTextColors();
+
+            // Reapply colors dynamically (if table is updated)
+            setInterval(updateTextColors, 5000);
+        });
+
+        // Object to keep track of sort orders
+        const sortOrders = {
+            'name': 'asc',
+            'probability': 'asc'
+        };
+
+        // Sort table rows
+        function sortTable(criteria, button) {
+            console.log(`Sorting by: ${criteria}`); // Debugging line
+
+            const tableBody = document.querySelector('#result-table tbody');
+            const rows = Array.from(tableBody.rows);
+
+            // Determine current sort order and toggle it
+            let currentSortOrder = sortOrders[criteria];
+            let newSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+            sortOrders[criteria] = newSortOrder;
+
+            // Update button's data-sort-order attribute
+            button.setAttribute('data-sort-order', newSortOrder);
+
+            // Sort rows based on criteria and sort order
+            rows.sort((a, b) => {
+                if (criteria === 'name') {
+                    const nameA = a.cells[0].innerText.toLowerCase();
+                    const nameB = b.cells[0].innerText.toLowerCase();
+                    if (nameA < nameB) return newSortOrder === 'asc' ? -1 : 1;
+                    if (nameA > nameB) return newSortOrder === 'asc' ? 1 : -1;
+                    return 0;
+                } else if (criteria === 'probability') {
+                    const aText = a.cells[1].innerText;
+                    const bText = b.cells[1].innerText;
+
+                    const aValue = parseFloat(aText) || 0;
+                    const bValue = parseFloat(bText) || 0;
+
+                    return newSortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+                } else {
+                    return 0; // Default case
+                }
+            });
+
+            // Clear existing rows
+            while (tableBody.firstChild) {
+                tableBody.removeChild(tableBody.firstChild);
+            }
+
+            // Append sorted rows
+            rows.forEach(row => tableBody.appendChild(row));
+            console.log(`Sorted by: ${criteria} in ${newSortOrder} order`); // Debugging line
+        }
+    </script>
+</body>
+</html>

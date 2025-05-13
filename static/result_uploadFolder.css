@@ -1,0 +1,213 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+/* Body Styling */
+body {
+    font-family: 'Rubik', sans-serif;
+    line-height: 1.6;
+    background-color: #131333;
+    color: #fff;
+    padding-top: 100px; /* Space for the fixed header */
+    min-height: 100vh; /* Ensure the body takes up full screen height */
+    position: relative;
+}
+
+/* Container */
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* Header Styling */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1C1C1C;
+    padding: 20px;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #0E1968;
+}
+
+header .logo img {
+    width: 150px;
+    height: auto;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+header nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-weight: 700;
+}
+
+header nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Header */
+@media (max-width: 600px) {
+    header {
+        padding: 10px;
+    }
+
+    header .logo img {
+        width: 120px;
+    }
+
+    header nav ul {
+        gap: 10px;
+    }
+
+    header nav ul li a {
+        font-size: 0.9rem;
+    }
+}
+
+/* Table Section */
+.table-section {
+    text-align: center;
+    margin-top: 70px;
+}
+
+.table-section h1 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-family: 'Bai Jamjuree', sans-serif;
+}
+
+#result-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    color: #333;
+}
+
+#result-table th,
+#result-table td {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+#result-table thead {
+    background-color: #001295;
+    color: #fff;
+}
+
+#result-table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+#result-table tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+#result-table button {
+    background-color: #1830B4;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#result-table button:hover {
+    background-color: #3056f1;
+}
+
+/* Sort Buttons */
+.sort-buttons {
+    margin-bottom: 20px;
+}
+
+.sort-buttons button {
+    background-color: #001295;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.sort-buttons button:hover {
+    background-color: #3056f1;
+}
+
+/* Footer section */
+footer {
+    background-color: #1C1C1C;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    min-height: 50px; /* Ensure footer has enough height if no content */
+}
+
+
+/* ================================
+   ปุ่ม Read more/Read less
+   ================================ */
+   .read-more-btn {
+    background-color: #F0F0F0;
+    color: #1830B4;
+    border: 2px solid #1830B4;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s;
+    margin-top: 10px;
+}
+
+.read-more-btn:hover {
+    background-color: #1830B4;
+    color: #ffffff;
+}
+
+/* Update navigation link styling to handle username display */
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: font-size 0.3s ease;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Optional: Style for the username display */
+nav ul li a#logout-link {
+    display: flex;
+    align-items: center;
+}
+
+/* Adjust spacing if necessary */
+nav ul li a#logout-link::before {
+    content: '🔒'; /* Add a lock icon before Logout */
+    margin-right: 5px;
+}
