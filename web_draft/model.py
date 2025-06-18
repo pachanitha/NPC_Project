@@ -221,13 +221,12 @@ def compute_code_embedding(source_code):
         _, sentence_embeddings = unixcoder_model(tokenized_ids_tensor)
     return sentence_embeddings.mean(dim=0).cpu().numpy()
 
-# Optimized neighborhood search function
 def localneighborhood(source_code, prefix, k, ratio):
     try:
-        # Step 1: Load precomputed embeddings and filenames
+        # 1) Load embeddings & filenames
         embeddings, filenames = load_precomputed_data(prefix)
 
-        # Construct the directory path based on prefix
+        # select directory
         if prefix == '0_':
             directory = "/Users/fah/Downloads/senior_1/training_dataset/prefix0"
         elif prefix == '1_':
@@ -235,55 +234,74 @@ def localneighborhood(source_code, prefix, k, ratio):
         else:
             raise ValueError(f"Invalid prefix: {prefix}")
 
-        # Step 2: Load the FAISS index for the given prefix
+        # 2) Load or build FAISS
         index = load_faiss_index_for_prefix(prefix, embeddings)
 
-        # Step 3: Compute the source embedding
+        # 3) Compute source embedding
         source_embedding = compute_code_embedding(source_code).astype(np.float32).reshape(1, -1)
 
-        # Step 4: Query the FAISS index
+        # 4) Query FAISS for all distances
         distances, indices = index.search(source_embedding, len(embeddings))
         results = [
-            (
-                filenames[i],
-                read_file(os.path.join(directory, filenames[i])),
-                float(distances[0][j])
-            )
+            (filenames[i],
+             read_file(os.path.join(directory, filenames[i])),
+             float(distances[0][j]))
             for j, i in enumerate(indices[0])
         ]
 
-        # Step 5: Apply distance threshold (90th percentile)
-        threshold = np.percentile([r[2] for r in results], 90)  # Use the distance (3rd element)
-        filtered_results = [r for r in results if r[2] <= threshold]
+        # 5) Threshold at 90th percentile
+        thr = np.percentile([r[2] for r in results], 90)
+        filtered = [r for r in results if r[2] <= thr]
 
-        if not filtered_results:
-            logger.info("[INFO] No neighbors within threshold.")
-            return []
+        # if threshold leaves too few, revert to full set
+        if len(filtered) < k:
+            filtered = results
 
-        # Step 6: Sampling logic
-        num_nearest = int(ratio[0] * k / 100)
-        num_middle = int(ratio[1] * k / 100)
+        # 6) Validate ratio
+        if sum(ratio) != 100:
+            ratio = [70, 20, 10]
+
+        # 7) Compute initial splits
+        num_nearest  = int(ratio[0] * k / 100)
+        num_middle   = int(ratio[1] * k / 100)
         num_farthest = int(ratio[2] * k / 100)
 
-        # Split into nearest, middle, and farthest categories
-        nearest = filtered_results[:num_nearest]
-        middle = filtered_results[num_nearest:num_nearest + num_middle]
-        farthest = filtered_results[num_nearest + num_middle:]
+        # 8) Ensure total ≤ k by decrementing farthest → middle → nearest
+        while (num_nearest + num_middle + num_farthest) > k:
+            if num_farthest > 0:
+                num_farthest -= 1
+            elif num_middle > 0:
+                num_middle -= 1
+            else:
+                num_nearest -= 1
 
-        # Sample from each category
-        sampled_nearest = random.sample(nearest, min(len(nearest), num_nearest))
-        sampled_middle = random.sample(middle, min(len(middle), num_middle))
-        sampled_farthest = random.sample(farthest, min(len(farthest), num_farthest))
+        # 9) Partition
+        filtered.sort(key=lambda x: x[2])
+        nearest_list  = filtered[:num_nearest]
+        middle_list   = filtered[num_nearest:num_nearest + num_middle]
+        farthest_list = filtered[num_nearest + num_middle:]
 
-        # Combine and sort results by distance
-        combined_sample = sampled_nearest + sampled_middle + sampled_farthest
-        combined_sample.sort(key=lambda x: x[2])
+        # 10) Sample each
+        nearest_sample  = random.sample(nearest_list, min(len(nearest_list), num_nearest))
+        middle_sample   = random.sample(middle_list,  min(len(middle_list),  num_middle))
+        farthest_sample = random.sample(farthest_list,min(len(farthest_list),num_farthest))
 
-        return combined_sample
+        sample = nearest_sample + middle_sample + farthest_sample
+
+        # 11) Fill up to k if needed
+        if len(sample) < k:
+            remaining = k - len(sample)
+            # choose from the thresholded set (filtered)
+            sample += random.sample(filtered, min(remaining, len(filtered)))
+
+        # 12) Sort & return
+        sample.sort(key=lambda x: x[2])
+        return sample
 
     except Exception as e:
         logger.error(f"[ERROR] localneighborhood failed: {e}")
         return []
+
 
 
 def gen_explanation(source_code, probability_chatgpt, probability_human, local_first, local_second, model_choice):
@@ -419,3 +437,12 @@ def gen_explanation(source_code, probability_chatgpt, probability_human, local_f
 
     return explanation
 
+Chat_code2_path = '/Users/fah/Downloads/senior_1/Chat_code2.java'
+Chat_code2 = read_file(Chat_code2_path)
+
+probability_chatgpt, probability_human = classify_code(Chat_code2)
+
+ratio = [70,20,10]
+local_random_first_prefix_threshold_random_scale = localneighborhood(Chat_code2, '0_', 4, ratio)
+for filename, neighbor_code, distance in local_random_first_prefix_threshold_random_scale:
+    print(f"Filename: {filename}\nDistance: {distance}\n")
