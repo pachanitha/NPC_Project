@@ -1,9 +1,11 @@
 # NPC: Detecting and Explaining LLM-Generated Source Code
 
-This repository contains the source code, datasets, evaluation results, and related resources for our system.
+This repository contains the source code, datasets, prompt template, evaluation results, and related resources for our system.
 
 ## 📁 Folder Structure
-
+- **prompt.md**
+  The prompt template used by NPC to generate the explanation.
+  
 - **evaluation_results**  
   The evaluation results after letting participants use our system.
 
