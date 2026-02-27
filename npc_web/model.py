@@ -22,7 +22,7 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 from dotenv import load_dotenv
 # Add custom path for UnixCoder
-sys.path.append('/Users/fah/Downloads/senior_1/')
+sys.path.append('...')
 from unixcoder import UniXcoder
 
 load_dotenv()
@@ -51,21 +51,21 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-model_path = "/Users/fah/Downloads/senior_1/web_draft/graphcodebert-base"
+model_path = "web_draft/graphcodebert-base"
 # Initialize GraphCodeBERT tokenizer and model
 graphCodeBERT_tokenizer = AutoTokenizer.from_pretrained(model_path)
-graphCodeBERT_model = AutoModel.from_pretrained(model_path, cache_dir="/Users/fah/Downloads/senior_1/web_draft/graphcodebert-base")
+graphCodeBERT_model = AutoModel.from_pretrained(model_path, cache_dir="web_draft/graphcodebert-base")
 graphCodeBERT_model.to(device)
 
 # Paths to precomputed embeddings and filenames for the training dataset
-EMBEDDINGS_0_PATH = "/Users/fah/Downloads/senior_1/training_dataset/precomputed_embeddings_0_.npy"
-EMBEDDINGS_1_PATH = "/Users/fah/Downloads/senior_1/training_dataset/precomputed_embeddings_1_.npy"
-FILENAMES_0_PATH = "/Users/fah/Downloads/senior_1/training_dataset/precomputed_filenames_0_.txt"
-FILENAMES_1_PATH = "/Users/fah/Downloads/senior_1/training_dataset/precomputed_filenames_1_.txt"
-FAISS_INDEX_PATH = "/Users/fah/Downloads/senior_1/training_dataset/faiss_index.bin"
+EMBEDDINGS_0_PATH = "training_dataset/precomputed_embeddings_0_.npy"
+EMBEDDINGS_1_PATH = "training_dataset/precomputed_embeddings_1_.npy"
+FILENAMES_0_PATH = "training_dataset/precomputed_filenames_0_.txt"
+FILENAMES_1_PATH = "training_dataset/precomputed_filenames_1_.txt"
+FAISS_INDEX_PATH = "training_dataset/faiss_index.bin"
 
 # Load UniXcoder
-UNIXCODER_PATH = "/Users/fah/Downloads/senior_1/web_draft/unixcoder-base"
+UNIXCODER_PATH = "unixcoder-base"
 unixcoder_model = UniXcoder(UNIXCODER_PATH).to(device)
 
 class GraphCodeBERTForClassification(nn.Module):
@@ -132,7 +132,7 @@ def read_file(file_path):
 # Function to classify source code
 def classify_code(code):
     # Load the trained model weights
-    model_path = "/Users/fah/Downloads/senior_1/graphCodeBERT_trained_model_final.pth"
+    model_path = "Detect_AI.pth"
 
     try:
         state_dict = torch.load(model_path, map_location=device)
@@ -195,9 +195,9 @@ def initialize_faiss_index(embeddings, index_path):
 
 def load_faiss_index_for_prefix(prefix, embeddings):
     if prefix == "0_":
-        index_path = "/Users/fah/Downloads/senior_1/training_dataset/faiss_index_prefix0.bin"
+        index_path = "training_dataset/faiss_index_prefix0.bin"
     elif prefix == "1_":
-        index_path = "/Users/fah/Downloads/senior_1/training_dataset/faiss_index_prefix1.bin"
+        index_path = "training_dataset/faiss_index_prefix1.bin"
     else:
         raise ValueError(f"Invalid prefix: {prefix}")
 
@@ -228,9 +228,9 @@ def localneighborhood(source_code, prefix, k, ratio):
 
         # select directory
         if prefix == '0_':
-            directory = "/Users/fah/Downloads/senior_1/training_dataset/prefix0"
+            directory = "training_dataset/prefix0"
         elif prefix == '1_':
-            directory = "/Users/fah/Downloads/senior_1/training_dataset/prefix1"
+            directory = "training_dataset/prefix1"
         else:
             raise ValueError(f"Invalid prefix: {prefix}")
 
@@ -437,7 +437,8 @@ def gen_explanation(source_code, probability_chatgpt, probability_human, local_f
 
     return explanation
 
-Chat_code2_path = '/Users/fah/Downloads/senior_1/Chat_code2.java'
+# Usage
+Chat_code2_path = 'code.java'
 Chat_code2 = read_file(Chat_code2_path)
 
 probability_chatgpt, probability_human = classify_code(Chat_code2)
