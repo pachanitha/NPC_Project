@@ -4,7 +4,7 @@ This repository contains the source code, datasets, prompt template, evaluation 
 
 ## 🤖 Model Weights
 The trained GraphCodeBERT model weights for this project are hosted on Hugging Face to keep the repository lightweight. 
-* **Hugging Face Repository:** [FFFFAHHH/detect_gen_code](https://huggingface.co/FFFFAHHH/detect_gen_code)
+* **Hugging Face Repository:** [FFFFAHHH/NPC_model](https://huggingface.co/FFFFAHHH/NPC_model)
 
 ---
 
