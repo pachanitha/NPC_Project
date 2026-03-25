@@ -68,3 +68,21 @@ The trained GraphCodeBERT model weights for this project are hosted on Hugging F
         # Make sure your virtual environment is activated in this terminal too
         python app.py
         ```
+
+## 📚 Citation
+
+If you use this code or system in your research, please cite our paper:
+
+```bibtex
+@conference{icaart26,
+  author={Pachanitha Saeheng and Napat Boongaree and Chutweeraya Sriwilailak and Chaiyong Ragkhitwetsagul and Teeradaj Racharak and Ekapol Chuangsuwanich},
+  title={NPC: Automated Tool for Detecting and Explaining ChatGPT-Generated Programs},
+  booktitle={Proceedings of the 18th International Conference on Agents and Artificial Intelligence - Volume 5: ICAART},
+  year={2026},
+  pages={4714-4719},
+  publisher={SciTePress},
+  organization={INSTICC},
+  doi={10.5220/0014485500004052},
+  isbn={978-989-758-796-2},
+  issn={2184-433X},
+}
